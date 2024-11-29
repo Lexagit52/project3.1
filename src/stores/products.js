@@ -35,11 +35,10 @@ export const useProductStore = defineStore('product', () => {
   const selectedCategory = ref('');
   const searchQuery = ref('');
   
-const findProductById = computed(() => {
-    return (id) => {
-        return products.value.find((product) => product.id == id);
-    }
-  });
+  const findProductById = (id) => {
+    return products.value.find((product) => product.id == id);
+  };
+  
 
   const filteredProducts = computed(() => {
     return products.value.filter((product) => {

@@ -28,7 +28,7 @@
             </div>
             <div class="card-footer">
               <button type="button" class="btn btn-success me-2" @click="$router.push(`/detail/${product.id}`)">Detail</button>
-              <button type="button" class="btn btn-outline-success">Cart</button>
+              <button type="button" @click="cartStore.addToCart(product.id)" class="btn btn-outline-success">Cart</button>
             </div>
           </div>
         </div>
@@ -39,16 +39,39 @@
 </template>
 
 <script setup>
-import { useProductStore } from "@/stores/products"; 
-import { useCategoryStore } from "@/stores/category"; 
+import { useCategoryStore } from '@/stores/category';
+import { useProductStore } from '@/stores/products';
+import { useCartStore } from '@/stores/cart';
+
+import { ref, computed } from 'vue';
 
 
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
 
+const category = ref(null);
+const searchText = ref('');
+const products = computed(() => productStore.products);
+const cartStore = useCartStore();
+
+
+
+const filteredProducts = computed(() => {
+  let result = productStore.products;
+  if (categoryStore.selectedCategory) {
+    result = result.filter((product) => product.category === categoryStore.selectedCategory);
+  }
+  if (productStore.searchQuery) {
+    result = result.filter((product) =>
+      product.name.toLowerCase().includes(productStore.searchQuery.toLowerCase())
+    );
+  }
+  return result;
+});
+
 
 const resetFilters = () => {
-  categoryStore.selectedCategory = ''; 
-  productStore.searchQuery = ''; 
+  category.value = null;
+  searchText.value = '';
 };
 </script>
